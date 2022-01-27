@@ -1,10 +1,10 @@
 package com.brh.poc.pokemon.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.brh.poc.pokemon.databinding.FragmentPokemonListBinding
@@ -24,7 +24,7 @@ class PokemonListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return FragmentPokemonListBinding.inflate(inflater).apply {
             rvPokemon.layoutManager = LinearLayoutManager(root.context)
             val adapter = ViewBindingPagingAdapter<PokemonUI>(lifecycleOwner, PokemonDiffUtil())

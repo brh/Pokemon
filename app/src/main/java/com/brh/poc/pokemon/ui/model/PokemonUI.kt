@@ -18,6 +18,7 @@ class PokemonUI(val name: String, val id: Int, val details: Deferred<PokemonDeta
     override fun bind(binding: ViewBinding, position: Int) {
         super.bind(binding, position)
         binding as ViewListItemBinding
+        binding.ivIcon.setImageDrawable(null)
         binding.progressbar.isVisible = true
         GlobalScope.launch(Dispatchers.Main) {
             details.await()?.let {

@@ -16,7 +16,7 @@
             android:id="@+id/iv_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:scaleType="centerInside"
+            android:scaleType="fitCenter"
             android:layout_width="@dimen/image_icon"
             android:layout_height="@dimen/image_icon"/>
         <ProgressBar android:id="@+id/progressbar"

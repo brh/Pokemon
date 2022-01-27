@@ -21,7 +21,7 @@ typealias InflateMethod = (inflater: LayoutInflater, parent: ViewGroup, attach: 
 open class ViewBindingAdapter<Item: ViewBindingViewItem>(
     itemlist: List<Item>,
     val lifecycleOwner: LifecycleOwner? = null
-):RecyclerView.Adapter<VBHolder2>()
+):RecyclerView.Adapter<VBHolder2<Item>>()
 {
     private var list: List<Item> = itemlist
         private set
@@ -37,7 +37,7 @@ open class ViewBindingAdapter<Item: ViewBindingViewItem>(
         it.viewType
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VBHolder2 {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VBHolder2<Item> {
         return typeMap[viewType]?.let {
             val binding: ViewBinding = when (it){
                 is Int -> {
@@ -55,10 +55,14 @@ open class ViewBindingAdapter<Item: ViewBindingViewItem>(
         } ?: throw RuntimeException("Please set a type")
     }
 
-    override fun onBindViewHolder(holder: VBHolder2, position: Int) {
-        list[position].internalBind(holder.binding, position)
+    override fun onBindViewHolder(holder: VBHolder2<Item>, position: Int) {
+        holder.bind(list[position], position)
     }
 
+    override fun onViewRecycled(holder: VBHolder2<Item>) {
+        super.onViewRecycled(holder)
+        holder.recycled()
+    }
     override fun getItemCount(): Int = list.size
 
     fun submitNewList(newList: List<Item>, diffCallback: ViewBindingDiffUtil<Item> = ViewBindingDiffUtil(newList, list)) {
@@ -100,13 +104,27 @@ abstract class ViewBindingViewItem(
      * or something like that.
      */
     open fun bind(binding: ViewBinding, position: Int){}
+
+    open fun recycled(){}
 }
 
 /**
  * The holder used internally
  */
-class VBHolder2(val binding:ViewBinding):
-    RecyclerView.ViewHolder(binding.root)
+class VBHolder2<T: ViewBindingViewItem>(private val binding: ViewBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+
+    private var _item: T? = null
+
+    fun bind(item: T, position: Int) {
+        _item = item
+        item.internalBind(binding, position)
+    }
+
+    fun recycled() {
+        _item?.recycled()
+    }
+}
 
 open class ViewBindingDiffUtil<T>(val newList: List<T>, val oldList: List<T>): DiffUtil.Callback() {
     override fun getNewListSize(): Int {

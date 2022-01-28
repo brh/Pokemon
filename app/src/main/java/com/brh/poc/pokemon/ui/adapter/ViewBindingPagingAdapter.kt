@@ -16,7 +16,7 @@ import androidx.viewbinding.ViewBinding
 open class ViewBindingPagingAdapter<Item: ViewBindingViewItem>(
     val lifecycleOwner: LifecycleOwner? = null,
     diffUtil: DiffUtil.ItemCallback<Item>
-):PagingDataAdapter<Item, VBHolder2>(diffUtil)
+):PagingDataAdapter<Item, VBHolder2<Item>>(diffUtil)
 {
     /**
      * A map of view (xml id) vs whether or not the ViewBindingViewItem is a Databinding vs a ViewBinding. True means it is ViewBinding
@@ -29,7 +29,7 @@ open class ViewBindingPagingAdapter<Item: ViewBindingViewItem>(
         it.viewType
     } ?: 0 //default to zero if the value returned is a placeholder as stated in PagingDataAdapter docs
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VBHolder2 {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VBHolder2<Item> {
         return typeMap[viewType]?.let {
             val binding: ViewBinding = when (it){
                 is Int -> {
@@ -47,7 +47,7 @@ open class ViewBindingPagingAdapter<Item: ViewBindingViewItem>(
         } ?: throw RuntimeException("Please set a type")
     }
 
-    override fun onBindViewHolder(holder: VBHolder2, position: Int) {
-        getItem(position)?.internalBind(holder.binding, position) ?: Unit
+    override fun onBindViewHolder(holder: VBHolder2<Item>, position: Int) {
+        holder.bind(getItem(position), position)
     }
 }

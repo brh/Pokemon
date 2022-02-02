@@ -116,9 +116,9 @@ class VBHolder2<T: ViewBindingViewItem>(private val binding: ViewBinding) :
 
     private var _item: T? = null
 
-    fun bind(item: T, position: Int) {
+    fun bind(item: T?, position: Int) {
         _item = item
-        item.internalBind(binding, position)
+        item?.internalBind(binding, position)
     }
 
     fun recycled() {

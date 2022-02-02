@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <data>
         <variable
             name="pokemon"
@@ -24,16 +23,16 @@
             app:layout_constraintEnd_toEndOf="@id/iv_icon"
             app:layout_constraintTop_toTopOf="@id/iv_icon"
             app:layout_constraintBottom_toBottomOf="@id/iv_icon"
-            android:layout_width="0dp"
-            android:layout_height="0dp"/>
+            android:layout_width="@dimen/image_icon"
+            android:layout_height="@dimen/image_icon"/>
         <TextView android:id="@+id/tv_name"
             android:text="@{pokemon.name}"
             app:layout_constraintStart_toEndOf="@id/iv_icon"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_goneMarginStart="@dimen/image_icon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

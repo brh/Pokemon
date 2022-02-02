@@ -1,6 +1,7 @@
 package com.brh.poc.pokemon.repository.network
 
 import android.net.Uri
+import com.brh.poc.pokemon.repository.network.model.Sprites
 import com.brh.poc.pokemon.ui.model.PokemonDetailUI
 import com.brh.poc.pokemon.ui.model.PokemonPageResponse
 import com.brh.poc.pokemon.ui.model.PokemonType
@@ -21,7 +22,7 @@ class PokemonRepositoryImpl(val api: PokemonApi) : PokemonRepository {
             val id = item.url.extractIdFromUrl()
             val deferred: Deferred<PokemonDetailUI> = repoScope.async(start = CoroutineStart.LAZY) {
                 val result = api.getPokemonDetails(id)
-                PokemonDetailUI(result.sprites.frontDefault, emptyList(), PokemonType("f"))
+                PokemonDetailUI(resolveImage(result.sprites), emptyList(), PokemonType("f"))
             }
             PokemonUI(item.name, id, deferred)
         }
@@ -31,6 +32,9 @@ class PokemonRepositoryImpl(val api: PokemonApi) : PokemonRepository {
             uiList
         )
     }
+
+    private fun resolveImage(sprites: Sprites?): String? =
+        sprites?.frontDefault ?: sprites?.backDefault ?: sprites?.frontShiny ?: sprites?.backShiny
 
     private fun String.extractIdFromUrl() =
         Uri.parse(this).lastPathSegment?.toInt() ?: throw RuntimeException()

@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.brh.poc.pokemon.R
 import com.brh.poc.pokemon.databinding.FragmentPokemonListBinding
 import com.brh.poc.pokemon.ui.adapter.PokemonDiffUtil
 import com.brh.poc.pokemon.ui.adapter.ViewBindingPagingAdapter
@@ -25,7 +27,7 @@ class PokemonListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return FragmentPokemonListBinding.inflate(inflater).apply {
+        return DataBindingUtil.inflate<FragmentPokemonListBinding>(inflater, R.layout.fragment_pokemon_list, container, false).apply {
             rvPokemon.layoutManager = LinearLayoutManager(root.context)
             val adapter = ViewBindingPagingAdapter<PokemonUI>(lifecycleOwner, PokemonDiffUtil())
             rvPokemon.adapter = adapter

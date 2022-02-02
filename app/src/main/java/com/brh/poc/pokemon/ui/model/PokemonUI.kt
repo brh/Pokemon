@@ -10,21 +10,39 @@ import com.brh.poc.pokemon.ui.adapter.ViewBindingViewItem
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class PokemonUI(val name: String, val id: Int, val details: Deferred<PokemonDetailUI>) :
     ViewBindingViewItem(R.layout.view_list_item, BR.pokemon) {
+    private var imageJob: Job? = null
+    private var _binding: ViewListItemBinding? = null
 
     override fun bind(binding: ViewBinding, position: Int) {
         super.bind(binding, position)
-        binding as ViewListItemBinding
+        _binding = binding as ViewListItemBinding
         binding.ivIcon.setImageDrawable(null)
+        binding.ivIcon.isVisible = false
         binding.progressbar.isVisible = true
-        GlobalScope.launch(Dispatchers.Main) {
-            details.await()?.let {
-                binding.progressbar.isVisible = false
-                binding.ivIcon.load(it.image)
+        imageJob = GlobalScope.launch(Dispatchers.Main) {
+            details.await().let {
+                if (this.isActive) {
+                    binding.progressbar.isVisible = false
+                    binding.ivIcon.load(it.image)
+                    binding.ivIcon.isVisible = true
+                } else
+                    binding.ivIcon.isVisible = false
             }
         }
+    }
+
+    override fun recycled() {
+        _binding?.apply {
+            ivIcon.isVisible = false
+            progressbar.isVisible = true
+        }
+        imageJob?.cancel()
+        super.recycled()
     }
 }

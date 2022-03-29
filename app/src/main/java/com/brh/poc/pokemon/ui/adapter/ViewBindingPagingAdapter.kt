@@ -14,9 +14,10 @@ import androidx.viewbinding.ViewBinding
  * the work to the ViewBindingViewItem where you can define your view types, associate the view
  * [ViewBindingViewItem.createView] and bind the data [ViewBindingViewItem.data] to the view in [ViewBindingViewItem.bind] */
 open class ViewBindingPagingAdapter<Item: ViewBindingViewItem>(
-    val lifecycleOwner: LifecycleOwner? = null,
-    diffUtil: DiffUtil.ItemCallback<Item>
-):PagingDataAdapter<Item, VBHolder2<Item>>(diffUtil)
+    private val lifecycleOwner: LifecycleOwner? = null,
+    diffUtil: DiffUtil.ItemCallback<Item>,
+    val onClickCallback: ViewBindingItemCallback? = null
+): PagingDataAdapter<Item, VBHolder2<Item>>(diffUtil)
 {
     /**
      * A map of view (xml id) vs whether or not the ViewBindingViewItem is a Databinding vs a ViewBinding. True means it is ViewBinding
@@ -48,6 +49,8 @@ open class ViewBindingPagingAdapter<Item: ViewBindingViewItem>(
     }
 
     override fun onBindViewHolder(holder: VBHolder2<Item>, position: Int) {
-        holder.bind(getItem(position), position)
+        val item = getItem(position)
+        holder.bind(item, position)
+        item?.onClick = onClickCallback
     }
 }

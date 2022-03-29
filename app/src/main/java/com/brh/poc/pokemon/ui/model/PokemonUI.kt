@@ -22,6 +22,10 @@ class PokemonUI(val name: String, val id: Int, val details: Deferred<PokemonDeta
     override fun bind(binding: ViewBinding, position: Int) {
         super.bind(binding, position)
         _binding = binding as ViewListItemBinding
+        setupImageView(binding)
+    }
+
+    private fun setupImageView(binding: ViewListItemBinding) {
         binding.ivIcon.setImageDrawable(null)
         binding.ivIcon.isVisible = false
         binding.progressbar.isVisible = true

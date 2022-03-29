@@ -72,6 +72,10 @@ open class ViewBindingAdapter<Item: ViewBindingViewItem>(
     }
 }
 
+interface ViewBindingItemCallback {
+    fun viewBindingClick(view: View, item: ViewBindingViewItem)
+}
+
 /**
  * Outside of setting the adapter for the recycler this is the only class that you will need to extend
  * or really fully interact with
@@ -88,6 +92,7 @@ abstract class ViewBindingViewItem(
 {
     /** This is set right before the [bind] call **/
     lateinit var context: Context
+    var onClick: ViewBindingItemCallback? = null
 
     fun internalBind(binding: ViewBinding, position: Int) {
         context = binding.root.context
@@ -95,6 +100,14 @@ abstract class ViewBindingViewItem(
             bindingVar?.let {  binding.setVariable(it, this) }
         }
         bind(binding, position)
+    }
+
+    /**
+     * Generic OnClick callback to pass click events to the main View
+     * which then can be handled by ViewModel
+     */
+    fun onClick(view: View) {
+        onClick?.viewBindingClick(view, this)
     }
 
     /**

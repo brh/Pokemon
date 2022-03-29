@@ -11,8 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.brh.poc.pokemon.R
 import com.brh.poc.pokemon.databinding.FragmentPokemonListBinding
 import com.brh.poc.pokemon.ui.adapter.PokemonDiffUtil
+import com.brh.poc.pokemon.ui.adapter.ViewBindingItemCallback
 import com.brh.poc.pokemon.ui.adapter.ViewBindingPagingAdapter
-import com.brh.poc.pokemon.ui.model.PokemonUI
+import com.brh.poc.pokemon.ui.adapter.ViewBindingViewItem
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ViewModelOwner
@@ -29,7 +30,12 @@ class PokemonListFragment : Fragment() {
     ): View {
         return DataBindingUtil.inflate<FragmentPokemonListBinding>(inflater, R.layout.fragment_pokemon_list, container, false).apply {
             rvPokemon.layoutManager = LinearLayoutManager(root.context)
-            val adapter = ViewBindingPagingAdapter<PokemonUI>(lifecycleOwner, PokemonDiffUtil())
+            val adapter = ViewBindingPagingAdapter(lifecycleOwner, PokemonDiffUtil(), object: ViewBindingItemCallback{
+                override fun viewBindingClick(view: View, item: ViewBindingViewItem) {
+                    //TODO call ViewModel
+                }
+
+            })
             rvPokemon.adapter = adapter
 
             lifecycleScope.launch {
